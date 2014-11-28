@@ -17,7 +17,12 @@ setFile = (options, cb) ->
   auth = getAuth bucket
   client = knox.createClient auth
   stats = fs.statSync filePath
-  headers = {'Content-Length': stats.size}
+  headers = {
+    'Content-Length': stats.size,
+    'Content-Type': 'image/jpeg',
+    'x-amz-acl': 'public-read'
+  }
+
   console.log 'WARNING: File size is 0' if stats.size is 0
 
   fileReadStream = fs.createReadStream filePath
@@ -114,7 +119,11 @@ if require.main == module
 
   # grab all the files in the directory
   fs.readdir dir, (err, files) ->
-    async.eachSeries files, (file, fileCb) ->
+    if method is 'upload'
+      looper = async.each
+    else
+      looper = async.eachSeries
+    looper files, (file, fileCb) ->
       if method is 'upload'
         console.log "uploading file" , file
         upload file, fileCb
@@ -140,6 +149,7 @@ if require.main == module
         process.exit()
 
   processFile = (file, cb) ->
+    return cb() if file == "files.json"
     filePath = path.join dir, file
     fileS3Path = path.join s3path, file
     re = new RegExp(' ', 'g')
@@ -149,7 +159,7 @@ if require.main == module
     }
 
     fs.stat filePath, (err, stats) ->
-      newFile.createdAt = +new Date(stats.ctime)
+      newFile.createdAt = +new Date(stats.mtime)
       newFile.size = stats.size #bytes
       data.push newFile
       cb()
@@ -160,12 +170,12 @@ if require.main == module
     console.log "file path", filePath
     console.log "s3 path", fileS3Path 
     if multipart
-      setFileMultipart {bucket, path: fileS3Path,filePath,useProgress:true}, (err, result) ->
+      setFileMultipart {bucket, path: fileS3Path,filePath,useProgress:false}, (err, result) ->
         #console.log "ERROR:", err if err
         #console.log "Uploaded multipart file #{filePath} to bucket #{bucket}, path #{path}"
         cb err, result
     else
-      setFile {bucket,path: fileS3Path,filePath,useProgress:true}, (err, result) ->
+      setFile {bucket,path: fileS3Path,filePath,useProgress:false}, (err, result) ->
         #console.log "ERROR:", err if err
         #console.log "Uploaded file #{filePath} to bucket #{bucket}, path #{path}"
         cb err, result
