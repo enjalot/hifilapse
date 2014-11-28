@@ -1,0 +1,100 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="index.css"></link>
+ </head>
+<body>
+ 
+<!-- we create a template to use as the body -->
+<script type="text/template" id="body">
+  {{if !_page.loaded}}not loaded{{/if}}loaded<br>
+  <div class="container">
+    <player as="mainPlayer"
+      data="{{_page.data}}" 
+      current="{{_page.currentIndex}}"
+      loaded="{{_page.loaded}}"
+      >
+    </player>
+
+    <player class="thumbplayer" 
+      as="thumbPlayer" 
+      width="{{200}}"
+      fps="{{_page.fps}}"
+      data="{{_page.data}}" 
+      current="{{_page.loopIndex}}"
+      loaded="{{_page.loaded}}"
+      looping="{{true}}"
+      >
+    </player>
+
+    <div class="fps-controls">
+      FPS: {{_page.fps}}<br>
+      <input class="fps-slider" type=range value={{_page.fps}} min=1 max=60 step=1>
+    </div>
+  </div>
+
+  <selector
+    data="{{_page.data}}"
+    current="{{_page.currentIndex}}"
+    left="{{_page.left}}"
+    right="{{_page.right}}"
+    width="{{640}}"
+    height="{{70}}"
+    on-hover="mainPlayer.load()"
+  >
+  </selector>
+
+  {{each _page.selectors as #selector,#i}}
+    <selector
+      data="{{_page.data}}"
+      current="{{_page.currentIndex}}"
+      left="{{#selector.l}}"
+      right="{{#selector.r}}"
+      selleft="{{_page.selectors[#i-1].l}}"
+      selright="{{_page.selectors[#i-1].r}}"
+      width="{{640}}"
+      height="{{#selector.h}}"
+      on-hover="mainPlayer.load()"
+    >
+    </selector>
+  {{/each}}
+
+
+
+  {{_page.currentIndex}} / 
+  {{_page.data.length}}
+</script>
+
+<script type="text/template" id="selector" data-element="selector">
+<svg class="selector" 
+  width="{{@width}}"
+  height="{{@height}}">
+  {{each range as #d}}
+  <rect class="frame"
+    on-mouseover="hover(#d)"
+    x="{{#d.x}}"
+    y="{{#d.y}}"
+    width="{{rw}}"
+    height="{{@height}}">
+  </rect>
+  {{/each}}
+</svg>
+  
+</script>
+<script type="text/template" id="player" data-element="player">
+  <div class="canvas-container {{@class}}">
+    <canvas 
+      class="player" as="player"
+      on-mousemove="move($event)" 
+      on-click="click()">
+    </canvas>
+    <div class="controls">
+    </div>
+  </div>
+</script>
+
+<script src="https://derbyjs.github.io/derby-standalone/dist/0.6.0-alpha25/derby-standalone.min.js"></script>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> 
+<script src="index.js" charset="utf-8"></script>
+
+</body>
+</html>

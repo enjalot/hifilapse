@@ -1,0 +1,39 @@
+.container {
+	width: 100%;
+}
+.canvas-container {
+  display: inline-block;
+  margin: 10px;
+}
+canvas.player {
+  border: 1px solid orange;
+}
+.thumbplayer {
+  vertical-align: top;
+}
+.selector {
+  border: 1px solid blue;
+}
+.selector .frame {
+  stroke: none;
+  fill-opacity: 0.5;
+}
+.hidden {
+  display: none;
+  width: 100px;
+  
+}
+.controls button {
+  margin: 5px;
+  padding: 5px;
+}
+
+.fps-controls {
+  margin: 10px;
+  display: inline-block;
+  vertical-align: top;
+
+}
+.fps-slider {
+  width: 200px;
+}
