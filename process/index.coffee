@@ -19,8 +19,7 @@ setFile = (options, cb) ->
   stats = fs.statSync filePath
   headers = {
     'Content-Length': stats.size,
-    'Content-Type': 'image/jpeg',
-    'x-amz-acl': 'public-read'
+    'Content-Type': 'image/jpeg'
   }
 
   console.log 'WARNING: File size is 0' if stats.size is 0
@@ -101,6 +100,7 @@ if require.main == module
     .option '-i, --multipart', 'boolean to specify whether multipart upload should be used'
     .option '-d, --dir <dir>', 'path to directory'
     .option '-b, --bucket <bucket>', 'override the configured s3 bucket'
+    .option '-s, --start <start>', 'start series at which file'
     .parse process.argv
 
   filePath = program.file
@@ -114,17 +114,22 @@ if require.main == module
   method = program.method
   multipart = program.multipart or false
   console.log "Performing #{method} on file #{filePath} for #{program.env} s3 bucket #{bucket}, path #{path}"
+  start = program.start
 
   data = []
+  count = 0
 
   # grab all the files in the directory
   fs.readdir dir, (err, files) ->
     if method is 'upload'
-      looper = async.each
+
+      looper = async.eachSeries
     else
       looper = async.eachSeries
     looper files, (file, fileCb) ->
       if method is 'upload'
+        count++
+        return fileCb() if start and count < start
         console.log "uploading file" , file
         upload file, fileCb
       else if method is 'process'
@@ -144,9 +149,7 @@ if require.main == module
         output = path.join(dir, "files.json")
         fs.writeFileSync output, str
         console.log "wrote to", output
-        process.exit()
-      else if method is 'upload'
-        process.exit()
+      #else if method is 'upload'
 
   processFile = (file, cb) ->
     return cb() if file == "files.json"
@@ -177,7 +180,7 @@ if require.main == module
     else
       setFile {bucket,path: fileS3Path,filePath,useProgress:false}, (err, result) ->
         #console.log "ERROR:", err if err
-        #console.log "Uploaded file #{filePath} to bucket #{bucket}, path #{path}"
+        console.log "Uploaded file #{filePath} to bucket #{bucket}, path #{fileS3Path}"
         cb err, result
 
 
