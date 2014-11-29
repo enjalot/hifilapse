@@ -6,32 +6,14 @@
  
 <!-- we create a template to use as the body -->
 <script type="text/template" id="body">
-  {{if !_page.loaded}}not loaded{{/if}}loaded<br>
+  {{if !_page.loaded}}not loaded<br>{{/if}}
   <div class="container">
     <player as="mainPlayer"
       data="{{_page.data}}" 
       current="{{_page.currentIndex}}"
       loaded="{{_page.loaded}}"
       >
-    </player>
-
-    <player class="thumbplayer" 
-      as="thumbPlayer" 
-      width="{{200}}"
-      fps="{{_page.fps}}"
-      data="{{_page.data}}" 
-      current="{{_page.loopIndex}}"
-      loaded="{{_page.loaded}}"
-      looping="{{true}}"
-      >
-    </player>
-
-    <div class="fps-controls">
-      FPS: {{_page.fps}}<br>
-      <input class="fps-slider" type=range value={{_page.fps}} min=1 max=60 step=1>
-      <br>
-      {{Math.floor(_page.data.length / _page.fps * 10)/10}} seconds for {{_page.data.length}} frames
-    </div>
+    </player> 
   </div>
 
   {{with _page.selectors[0] as #selector}}
@@ -64,10 +46,30 @@
   {{/each}}
     -->
 
-
-
   {{_page.currentIndex}} / 
   {{_page.data.length - 1}}
+
+  <div class="container">
+  <player class="thumbplayer" 
+      as="thumbPlayer" 
+      width="{{200}}"
+      fps="{{_page.fps}}"
+      data="{{_page.data}}" 
+      current="{{_page.loopIndex}}"
+      loaded="{{_page.loaded}}"
+      looping="{{true}}"
+      >
+    </player>
+
+    <div class="fps-controls">
+      FPS: {{_page.fps}}<br>
+      <input class="fps-slider" type=range value={{_page.fps}} min=1 max=60 step=1>
+      <br>
+      {{Math.floor(_page.data.length / _page.fps * 10)/10}} seconds for {{_page.data.length}} frames
+    </div>
+    </div>
+
+
 </script>
 
 <script type="text/template" id="selector" data-element="selector">
