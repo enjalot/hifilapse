@@ -29,20 +29,25 @@
     <div class="fps-controls">
       FPS: {{_page.fps}}<br>
       <input class="fps-slider" type=range value={{_page.fps}} min=1 max=60 step=1>
+      <br>
+      {{Math.floor(_page.data.length / _page.fps * 10)/10}} seconds for {{_page.data.length}} frames
     </div>
   </div>
 
+  {{with _page.selectors[0] as #selector}}
   <selector
     data="{{_page.data}}"
     current="{{_page.currentIndex}}"
-    left="{{_page.left}}"
-    right="{{_page.right}}"
+    left="{{#selector.l}}"
+    right="{{#selector.r}}"
     width="{{640}}"
-    height="{{70}}"
+    height="{{100}}"
     on-hover="mainPlayer.load()"
   >
   </selector>
+  {{/with}}
 
+  <!--
   {{each _page.selectors as #selector,#i}}
     <selector
       data="{{_page.data}}"
@@ -57,11 +62,12 @@
     >
     </selector>
   {{/each}}
+    -->
 
 
 
   {{_page.currentIndex}} / 
-  {{_page.data.length}}
+  {{_page.data.length - 1}}
 </script>
 
 <script type="text/template" id="selector" data-element="selector">
@@ -69,7 +75,7 @@
   width="{{@width}}"
   height="{{@height}}">
   {{each range as #d}}
-  <rect class="frame"
+  <rect class="frame {{if #d.i === current}}highlight{{/if}}"
     on-mouseover="hover(#d)"
     x="{{#d.x}}"
     y="{{#d.y}}"

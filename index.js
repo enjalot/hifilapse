@@ -95,9 +95,12 @@ Selector.prototype.init = function(model) {
 
   var rw = model.get("rw");
   var size = model.get("right") - model.get("left")
+  var xscale = d3.scale.linear()
+  .domain([0, size])
+  .range([0, model.get("width")])
   var range = d3.range(size).map(function(i){
     return {
-      x: i * (rw + 1),
+      x: xscale(i),
       y: 0,
       i: i
     }
@@ -151,12 +154,12 @@ d3.json(url, function(err, data){
   page.model.set("_page.data", data)
 
 
-  var sizes = [ 64, 128, 256, 512]
+  var sizes = [ 100, 64, 128, 256, 512]
   var selectors = []
   sizes.forEach(function(s,i) {
     selectors.push({
       n: s,
-      h: 50,
+      h: 100,
       l: 0,
       r: s
     })

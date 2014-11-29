@@ -6,13 +6,17 @@
   margin: 10px;
 }
 canvas.player {
-  border: 1px solid orange;
 }
 .thumbplayer {
   vertical-align: top;
 }
+
+.highlight {
+  fill: black;
+  fill-opacity: 1 !important;
+}
 .selector {
-  border: 1px solid blue;
+  margin: 10px;
 }
 .selector .frame {
   stroke: none;
@@ -37,3 +41,4 @@ canvas.player {
 .fps-slider {
   width: 200px;
 }
+
