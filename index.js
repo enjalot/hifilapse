@@ -145,9 +145,10 @@ d3.json(url, function(err, data){
     image.onload = function() {
       page.model.set("_page.images." + i, image)
       toLoad--;
-      if(toLoad <= 20) {
+      if(toLoad <= 10) {
         page.model.set("_page.loaded", true)
       }
+      page.model.set("_page.toLoad", toLoad)
     }
   })
   page.model.set("_page.currentIndex", 1)

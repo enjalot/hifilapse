@@ -6,7 +6,10 @@
  
 <!-- we create a template to use as the body -->
 <script type="text/template" id="body">
-  {{if !_page.loaded}}not loaded<br>{{/if}}
+  {{if !_page.loaded}}
+    loading frames {{_page.data.length - _page.toLoad}} / {{_page.data.length}}
+    <br>
+  {{/if}}
   <div class="container">
     <player as="mainPlayer"
       data="{{_page.data}}" 
@@ -52,7 +55,7 @@
   <div class="container">
   <player class="thumbplayer" 
       as="thumbPlayer" 
-      width="{{200}}"
+      width="{{300}}"
       fps="{{_page.fps}}"
       data="{{_page.data}}" 
       current="{{_page.loopIndex}}"
